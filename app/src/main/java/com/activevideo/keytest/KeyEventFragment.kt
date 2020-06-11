@@ -43,17 +43,14 @@ class KeyEventFragment : Fragment() {
         tvKeyState = view.findViewById(R.id.text_keystate)
         tvKeyHWId = view.findViewById(R.id.text_keyhwid)
         tvKeyState.text = "Press a key to start..."
+        tvKeyHWId.text = "Press BACK key twice to exit"
     }
 
-    fun showKeyInfo(key: Int, keyEvent: KeyEvent?) {
-        if (keyEvent?.action == KeyEvent.ACTION_DOWN) keyState = "KEYDOWN" else if (keyEvent?.action == KeyEvent.ACTION_UP) {
-            keyState = "KEYUP"
-        } else {
-            keyState = "UNKNOWN (" + keyEvent?.action + ")"
-        }
+    fun showKeyInfo(key: Int, keyState: String, isLongPress: Boolean, keySymbol: String, keyHWID: String) {
         tvKeyEvent.text = key.toString()
-        tvKeySymbol.text = KeyEvent.keyCodeToString(key).toString()
         tvKeyState.text = keyState
-        tvKeyHWId.text = "Device specific ID: " + keyEvent?.getScanCode().toString()
+//        tvKeyState.text = keyState + "("+ isLongPress.toString() + ")"
+        tvKeySymbol.text = keySymbol
+        tvKeyHWId.text = "Hardware key ID: " + keyHWID
     }
 }

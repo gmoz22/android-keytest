@@ -16,18 +16,18 @@
         android:id="@+id/text_keysymbol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="14dp"
+        android:textSize="30dp"
         />
     <TextView
         android:id="@+id/text_keystate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="30dp"
+        android:textSize="50dp"
         />
     <TextView
         android:id="@+id/text_keyhwid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="12dp"
+        android:textSize="16dp"
         />
 </LinearLayout>

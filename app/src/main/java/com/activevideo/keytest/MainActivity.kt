@@ -24,7 +24,8 @@ import androidx.fragment.app.FragmentActivity
 class MainActivity : FragmentActivity() {
 
     private var lastKey : Int? = null
-    private var exitKey : Int? = 67 // 111
+    private var exitKey : Int? = KeyEvent.KEYCODE_BACK // AV
+    private var exitKeyDev : Int? = KeyEvent.KEYCODE_DEL // 67
     private var keyState: String = ""
     private var keyStateIcon: String = ""
     private var state: String? = null
@@ -34,28 +35,29 @@ class MainActivity : FragmentActivity() {
         setContentView(R.layout.activity_main)
     }
 
-    fun extractKeyInfo (keyEvent: android.view.KeyEvent?): String {
-        if (keyEvent?.action == KeyEvent.ACTION_DOWN) {
-            keyState = "KEYDOWN"
-            keyStateIcon = "⬇️"
-        } else if (keyEvent?.action == KeyEvent.ACTION_UP) {
-            keyState = "KEYUP"
-            keyStateIcon = "⬆️"
-        } else {
-            keyState = "UNKNOWN (" + keyEvent?.action + ")"
-            keyStateIcon = keyEvent?.action.toString()
+    /*
+    fun extractKeyInfo (keyEvent: android.view.KeyEvent?): Object {
+        val keyInfo = object {
+            var keyState: String = ""
+            var keyIcon: String = ""
         }
-//        tvKeyEvent.text = keyEvent.keyCode().toString()
-//        tvKeySymbol.text = KeyEvent.keyCodeToString(keyEvent.keyCode()).toString()
-//        tvKeyState.text = keyState
-//        tvKeyHWId.text = "Device specific ID: " + keyEvent?.getScanCode().toString()
-//        keyState = keyEvent?.keyCode.toString()
-//        keyState = KeyEvent.keyCodeToString(keyEvent.keyCode()).toString()
-//        return Array(keyEvent.keyCode().toString(), KeyEvent.keyCodeToString(keyEvent.keyCode()).toString(), keyState,  keyEvent?.getScanCode().toString())
-//        return keyEvent?.keyCode.toString()
-//        return KeyEvent.keyCodeToString(keyEvent?.keyCode!!).toString()
-        return keyStateIcon
+        when (keyEvent?.action) {
+            KeyEvent.ACTION_DOWN -> {
+                keyInfo.keyState = "KEYDOWN"
+                keyInfo.keyIcon = "⬇️"
+            }
+            KeyEvent.ACTION_UP -> {
+                keyInfo.keyState = "KEYUP"
+                keyInfo.keyIcon = "⬆️️"
+            }
+            else -> {
+                keyInfo.keyState = "UNKNOWN (" + keyEvent?.action + ")"
+                keyInfo.keyIcon = keyEvent?.action.toString()
+            }
+        }
+        return keyInfo as Object
     }
+    */
 
     fun getKeyState (keyEvent: android.view.KeyEvent?): String {
         if (keyEvent?.action == KeyEvent.ACTION_DOWN) {
@@ -77,20 +79,30 @@ class MainActivity : FragmentActivity() {
         }
         return keyStateIcon
     }
+    fun getKeyIsLong (keyEvent: android.view.KeyEvent?): Boolean {
+        return keyEvent?.isLongPress!!
+    }
+    fun getKeySymbol (keyCode: Int): String {
+        return  KeyEvent.keyCodeToString(keyCode).toString()
+    }
+    fun getKeyHWID (keyEvent: android.view.KeyEvent?): String {
+        return  keyEvent?.getScanCode().toString()
+    }
 
 
-    override fun onKeyDown(keyCode: Int, event: android.view.KeyEvent?): Boolean {
-//        state = extractKeyInfo(event)
-        if (keyCode == exitKey && lastKey == exitKey) {
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if ( (keyCode == exitKey &&  lastKey == exitKey) || (keyCode == exitKeyDev &&  lastKey == exitKeyDev) ) {
             onBackPressed()
         } else {
             (supportFragmentManager.findFragmentById(R.id.fragment_text_keyevent) as KeyEventFragment).showKeyInfo(
                 keyCode,
-                event
+                getKeyStateIcon(event),
+                getKeyIsLong(event),
+                getKeySymbol(keyCode),
+                getKeyHWID(event)
             )
             (supportFragmentManager.findFragmentById(R.id.fragment_text_history) as KeyHistoryFragment).addEventItem(
-//                extractKeyInfo(event)
-                keyCode.toString() + " " + extractKeyInfo(event) + " " + KeyEvent.keyCodeToString(keyCode).toString()
+                keyCode.toString() + " " + getKeyStateIcon(event) + " " + getKeySymbol(keyCode)
             )
         }
         lastKey = keyCode

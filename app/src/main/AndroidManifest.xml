@@ -4,6 +4,7 @@
     package="com.activevideo.keytest"
     android:versionCode="1"
     android:versionName="1.0.0"
+    android:label="@string/app_name"
     >
 
     <application
